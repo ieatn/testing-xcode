@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct testing_xcodeApp: App {
+    @State private var store = TodoStore()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environment(store)
         }
     }
 }
