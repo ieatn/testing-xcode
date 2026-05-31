@@ -5,6 +5,7 @@
 
 import Foundation
 import SwiftUI
+import UIKit
 
 @Observable
 final class TodoStore {
@@ -89,7 +90,11 @@ final class TodoStore {
 
     func toggle(_ item: TodoItem) {
         guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
+        let wasCompleted = items[index].isCompleted
         items[index].isCompleted.toggle()
+        if !wasCompleted {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        }
         save()
     }
 
