@@ -8,6 +8,7 @@ import SwiftUI
 struct TaskRowView: View {
     let item: TodoItem
     let onToggle: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         HStack(spacing: 14) {
@@ -56,6 +57,20 @@ struct TaskRowView: View {
         .appCard()
         .opacity(item.isCompleted ? 0.72 : 1)
         .animation(.snappy, value: item.isCompleted)
+        .contextMenu {
+            Button {
+                onToggle()
+            } label: {
+                Label(
+                    item.isCompleted ? "Mark Incomplete" : "Complete",
+                    systemImage: item.isCompleted ? "circle" : "checkmark.circle"
+                )
+            }
+
+            Button(role: .destructive, action: onDelete) {
+                Label("Delete", systemImage: "trash")
+            }
+        }
     }
 
     private func dueLabel(for date: Date) -> String {

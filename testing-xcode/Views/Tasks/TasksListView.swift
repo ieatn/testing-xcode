@@ -33,9 +33,11 @@ struct TasksListView: View {
                 } else {
                     List {
                         ForEach(listItems) { item in
-                            TaskRowView(item: item) {
-                                store.toggle(item)
-                            }
+                            TaskRowView(
+                                item: item,
+                                onToggle: { store.toggle(item) },
+                                onDelete: { store.delete(item) }
+                            )
                             .listRowInsets(EdgeInsets(top: 6, leading: 20, bottom: 6, trailing: 20))
                             .listRowSeparator(.hidden)
                             .listRowBackground(Color.clear)
