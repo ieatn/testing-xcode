@@ -23,6 +23,7 @@ final class TodoStore {
             seedSampleTasks()
         }
         updateBadge()
+        TaskNotificationScheduler.sync(items: items)
     }
 
     var activeCount: Int {
@@ -160,6 +161,7 @@ final class TodoStore {
             UserDefaults.standard.set(data, forKey: itemsKey)
         }
         updateBadge()
+        TaskNotificationScheduler.sync(items: items)
     }
 
     private func updateBadge() {

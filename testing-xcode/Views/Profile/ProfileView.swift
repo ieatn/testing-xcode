@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(TodoStore.self) private var store
+    @State private var testNotificationMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -39,6 +40,47 @@ struct ProfileView: View {
                             .padding(.leading, 4)
 
                         Button {
+                            Task {
+                                let center = UNUserNotificationCenter.current()
+                                let settings = await center.notificationSettings()
+
+                                if settings.authorizationStatus == .denied {
+                                    testNotificationMessage =
+                                        "Notifications are off. Enable them in Settings → FlowDesk → Notifications."
+                                    return
+                                }
+
+                                if settings.alertSetting == .disabled {
+                                    testNotificationMessage =
+                                        "Alerts are off. Enable Banners or Alerts in Settings → FlowDesk → Notifications."
+                                    return
+                                }
+
+                                if settings.authorizationStatus == .notDetermined {
+                                    _ = try? await center.requestAuthorization(options: [.badge, .alert, .sound])
+                                }
+
+                                TaskNotificationScheduler.scheduleTestNotification()
+                                testNotificationMessage = "Test notification in 1 second."
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "bell.badge")
+                                    .foregroundStyle(AppTheme.accent)
+                                Text("Send test notification")
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    .foregroundStyle(AppTheme.textPrimary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundStyle(AppTheme.textSecondary.opacity(0.6))
+                            }
+                            .padding(18)
+                            .appCard()
+                        }
+                        .buttonStyle(.plain)
+
+                        Button {
                             withAnimation(.spring(response: 0.5, dampingFraction: 0.9)) {
                                 store.resetOnboarding()
                             }
@@ -58,6 +100,13 @@ struct ProfileView: View {
                             .appCard()
                         }
                         .buttonStyle(.plain)
+
+                        if let testNotificationMessage {
+                            Text(testNotificationMessage)
+                                .font(.system(size: 13, weight: .medium, design: .rounded))
+                                .foregroundStyle(AppTheme.textSecondary)
+                                .padding(.horizontal, 4)
+                        }
                     }
 
                     Text("FlowDesk v1.0")
