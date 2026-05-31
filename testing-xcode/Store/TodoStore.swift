@@ -6,6 +6,7 @@
 import Foundation
 import SwiftUI
 import UIKit
+import UserNotifications
 
 @Observable
 final class TodoStore {
@@ -21,6 +22,7 @@ final class TodoStore {
         if items.isEmpty && hasCompletedOnboarding {
             seedSampleTasks()
         }
+        updateBadge()
     }
 
     var activeCount: Int {
@@ -120,6 +122,10 @@ final class TodoStore {
         save()
     }
 
+    func refreshAppBadge() {
+        updateBadge()
+    }
+
     private func seedSampleTasks() {
         items = [
             TodoItem(
@@ -153,6 +159,11 @@ final class TodoStore {
         if let data = try? JSONEncoder().encode(items) {
             UserDefaults.standard.set(data, forKey: itemsKey)
         }
+        updateBadge()
+    }
+
+    private func updateBadge() {
+        UNUserNotificationCenter.current().setBadgeCount(activeCount)
     }
 }
 

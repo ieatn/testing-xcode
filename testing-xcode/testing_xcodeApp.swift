@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 @main
 struct testing_xcodeApp: App {
@@ -15,6 +16,11 @@ struct testing_xcodeApp: App {
         WindowGroup {
             RootView()
                 .environment(store)
+                .task {
+                    _ = try? await UNUserNotificationCenter.current()
+                        .requestAuthorization(options: [.badge])
+                    store.refreshAppBadge()
+                }
         }
     }
 }
