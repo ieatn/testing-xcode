@@ -23,17 +23,11 @@ struct MainTabView: View {
                 }
                 .tag(1)
 
-            FlappyBirdView()
-                .tabItem {
-                    Label("Flappy", systemImage: "gamecontroller.fill")
-                }
-                .tag(2)
-
             ProfileView()
                 .tabItem {
                     Label("You", systemImage: "person.crop.circle.fill")
                 }
-                .tag(3)
+                .tag(2)
         }
         .tint(AppTheme.accent)
         .sheet(isPresented: $showAddTask) {
